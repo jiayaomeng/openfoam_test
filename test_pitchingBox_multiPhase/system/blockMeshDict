@@ -1,0 +1,119 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2306                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale   1;
+
+vertices
+(
+    (0 0 0)
+    (1000 0 0)
+    (1000 200 0)
+    (0 200 0)
+    (0 0 0.1)
+    (1000 0 0.1)
+    (1000 200 0.1)
+    (0 200 0.1)
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (200 80 1) 
+    simpleGrading (
+        (
+        // x-direction expansion ratio
+            (0.45 0.3 0.05)  // outer-left of the box
+            (0.1 0.4 1) // underneath the box
+            (0.45 0.3 20) // outer-right of the box
+        )
+        // y-direction expansion ratio
+        (
+            (0.75 0.75 0.05) // below water surface
+            (0.25 0.25 20) // above water surface
+        )
+        // z-direction expansion ratio
+        1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    seabed
+    {
+        type wall;
+        faces
+        (
+            (1 5 4 0)
+        );
+    }
+    leftBoundary
+    {
+        type wall;
+        faces
+        (
+            (4 7 3 0)
+        );
+    }
+    rightBoundary
+    {
+        type wall;
+        faces
+        (
+            (2 6 5 1)
+        );
+    }
+
+    front
+    {
+        type empty;
+        faces
+        (
+            (4 5 6 7)
+        );
+    }
+
+    back
+    {
+        type empty;
+        faces
+        (
+            (0 3 2 1)
+        );
+    }
+
+    atmosphere
+    {
+        type patch;
+        faces
+        (
+            (6 2 3 7)
+        );
+    }
+    floatingObject
+    {
+        type wall;
+        faces ();
+    }
+);
+
+mergePatchPairs
+(
+);
+
+
+// ************************************************************************* //
